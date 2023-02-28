@@ -137,7 +137,7 @@ perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_p
 sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
 ```
 
-add headers for pfam table   
+Add a header for pfam table   
 
 ```
 sed '1i NCBI ID,PFAM' slayer_pfam3.csv > slayer_pfam4.csv   
@@ -151,7 +151,7 @@ perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_p
 sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
 ```
 
-obtain the taxonomic information for each nucleotide ID. This will generate a .csv file that contains taxonomic information from domain, phylum, class, order, family and genus. Note that this program will prompt the user for their email address that linked to NCBI, the input file name, and the output file name. Here I named the output as taxa.csv
+Obtain the taxonomic information for each nucleotide ID. This will generate a .csv file that contains taxonomic information from domain, phylum, class, order, family and genus. Note that this program will prompt the user for their email address that linked to NCBI, the input file name, and the output file name. Here I named the output as taxa.csv
 
 ```
 python gettaxa.py
