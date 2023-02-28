@@ -67,7 +67,7 @@ These installation may require storage for the database
 
 ## Workflow for AnnoView upload
 
-### Generate a gene neighborhood for proteins of your interest
+### Generate a gene neighborhood dataset for proteins of your interest
 
 Suppose you have a list of protein sequences, and you are interested in visualizing their gene neighborhood
 
