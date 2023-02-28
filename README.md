@@ -78,16 +78,14 @@ You should have the gene neighborhood dataset in GBK format
 
 Now, you can upload the dataset to AnnoView
 
-However, you may want to display more information in AnnoView
+However, you may want to more information to be displayed in AnnoView, e.g. taxonomic information, functional annotations by PFAM and KEGG.
 
-### Modify the CSV 
-This workflow is intended for modifying .csv files downloaded from AnnoView
+### Edit CSV 
+This workflow is intended for editing the .csv files downloaded from AnnoView
 
-Users can add annotation categories (kegg and pfam), define default center gene, taxonomic information by modifying the table
+Users can add annotation categories (kegg and pfam), define default center gene, taxonomic information by adding these information to the table
 
-AnnoView will automatically sort the gene neighborhoods when the default center gene is defined
-
-The updated center gene and annotation details can be viewed by uploading the updated table back to AnnoView
+The updated center gene and annotation details can be viewed by uploading the updated table back to AnnoView. AnnoView will also automatically sort the gene neighborhoods when the default center gene is defined
 
 First, remove ^M from the .csv file 
 
@@ -129,22 +127,40 @@ pfamscan.pl -fasta slayer1.fasta -dir ~/pfam/Pfam35.0 -output slayer_pfam
 Merge pfam annotations from the same protein sequence
 
 ```
-awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_pfam | awk -F'\t' '{a[$1]=a[$1]?a[$1] OFS $2:$2} END{for (i in a) print i FS a[i]} ' OFS=" " > slayer_pfam1
+awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_pfam | awk -F'\t' '{a[$1]=a[$1]?a[$1] OFS $2:$2} END{for (i in a) print i FS a[i]} ' OFS=" " > slayer_pfam1.csv
 ```
 
 For each protein sequence, sort its pfam annotations
 
 ```
-perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1 > slayer_pfam2
-sed 's/[^,]*/"&/2' slayer_pfam2 | sed 's/$/"/' > slayer_pfam3.csv
+perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_pfam2.csv
+sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
 ```
 
-Merge pfam and kegg annotations to csv   
+add headers for pfam table   
 
 ```
-#add headers for pfam table   
 sed '1i NCBI ID,PFAM' slayer_pfam3.csv > slayer_pfam4.csv   
 ```
 
-add taxonomic information
+Now do the same for kegg annotations
 
+```
+awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_kegg.tsv
+perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_pfam2.csv
+sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
+```
+
+obtain the taxonomic information for each nucleotide ID. This will generate a .csv file that contains taxonomic information from domain, phylum, class, order, family and genus. Note that this program will prompt the user for their email address that linked to NCBI, the input file name, and the output file name. Here I named the output as taxa.csv
+
+```
+python gettaxa.py
+```
+
+Merge pfam, kegg annotations and taxonomic information to csv   
+
+```
+python merge.py
+```
+
+Now, we have a new CSV file that contains not only a gene neighborhood dataset, but also its related taxonomic information and PFAM and KEGG annotations for the neighboring genes. We can now visualize the homology assignment by PFAM and KEGG in AnnoView.
