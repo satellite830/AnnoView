@@ -61,6 +61,8 @@ Or conda install
 conda install -c bioconda kofamscan
 ```
 
+This workflow also requires python, perl installed in your machine. 
+
 #### To be added: orthofinder, eggnog 
 
 These installation may require storage for the database   
