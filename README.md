@@ -71,7 +71,7 @@ These installation may require storage for the database
 
 ### Generate a gene neighborhood dataset for proteins of your interest
 
-Suppose you have a list of protein sequences, and you are interested in visualizing their gene neighborhood
+Suppose you have a list of protein sequences, and you are interested in visualizing their gene neighborhood. The next step allows users to download the gene neighborhood data in GBK format. Note that this program will retriece the 10kb upstream and downstream regions if the length is not defined by users.
 
 ```
 bash getcsv.sh length
