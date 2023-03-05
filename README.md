@@ -80,6 +80,8 @@ Now, you can upload the dataset to AnnoView
 
 However, you may want to more information to be displayed in AnnoView, e.g. taxonomic information, functional annotations by PFAM and KEGG.
 
+In the following example, I'll be using the protein accession numbers of Slr4 proteins and its homologs as the input file
+
 ### Edit CSV 
 This workflow is intended for editing the .csv files downloaded from AnnoView
 
@@ -96,17 +98,16 @@ sed -e "s/\r//g" slayer_annoview.csv > slayer_annoview1.csv
 Then, add column of default center so AnnoView knows which gene to be based on when sorting
 
 ```
-awk -F',' -v FPAT='[^,]*|("([^"]|"")*")' 'NR == FNR { keywords[$1]; next; } { if ($4 in keywords) print$0",1"; else {print $0",0"}}' accessions.txt slayer_annoview1.csv > slayer_annoview2.csv
-sed '1 s/.$/Default Center/' slayer_annoview2.csv > slayer_annoview3.csv
+awk -F',' -v FPAT='[^,]*|("([^"]|"")*")' 'NR == FNR { keywords[$1]; next; } { if ($4 in keywords) print$0",1"; else {print $0",0"}}' accessions.txt slayer_annoview1.csv | sed '1 s/.$/Default Center/' > slayer_annoview2.csv
 ```
 
 Write protein sequences into a fasta file
 
 ```
-awk -F',' -v FPAT='[^,]*|("([^"]|"")*")' 'NR>1 {if ($4) print ">"$4"\n"$9}' slayer_annoview3.csv > slayer.fasta
+awk -F',' -v FPAT='[^,]*|("([^"]|"")*")' 'NR>1 {if ($4) print ">"$4"\n"$9}' slayer_annoview2.csv > slayer.fasta
 ```
 
-Remove redundant sequnces (seqeunces that are exactly the same) 
+Remove redundant sequnces (seqeunces that are exactly the same). This program writes the output to slayer_unique.fasta
 
 ```
 python rmdup.py slayer.fasta
@@ -115,52 +116,47 @@ python rmdup.py slayer.fasta
 Annotate proteins sequences with KofamScan
 
 ```
-./exec_annotation -f detail-tsv -o slayer_kegg.tsv slayer1.fasta
+./exec_annotation -f detail-tsv -o slayer_kegg.tsv slayer_unique.fasta
 ```
 
 Annotate protein sequences with PfamScan
 
 ```
-pfamscan.pl -fasta slayer1.fasta -dir ~/pfam/Pfam35.0 -output slayer_pfam
+pfamscan.pl -fasta slayer_unique.fasta -dir ~/pfam/Pfam35.0 -output slayer_pfam.txt
 ```
 
 Merge pfam annotations from the same protein sequence
 
 ```
-awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_pfam | awk -F'\t' '{a[$1]=a[$1]?a[$1] OFS $2:$2} END{for (i in a) print i FS a[i]} ' OFS=" " > slayer_pfam1.csv
+awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_pfam.txt | awk -F'\t' '{a[$1]=a[$1]?a[$1] OFS $2:$2} END{for (i in a) print i FS a[i]} ' OFS=" " > slayer_pfam1.txt
 ```
 
-For each protein sequence, sort its pfam annotations
+For each protein sequence, sort its pfam annotations, edit the file into a csv table file, add column names
 
 ```
-perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_pfam2.csv
-sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
-```
-
-Add a header for pfam table   
-
-```
-sed '1i NCBI ID,PFAM' slayer_pfam3.csv > slayer_pfam4.csv   
+perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.txt | sed 's/[^,]*/"&/2' | sed 's/$/"/' | sed '1i NCBI ID,PFAM' > slayer_pfam2.csv
 ```
 
 Now do the same for kegg annotations
 
 ```
-awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_kegg.tsv
-perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.csv > slayer_pfam2.csv
-sed 's/[^,]*/"&/2' slayer_pfam2.csv | sed 's/$/"/' > slayer_pfam3.csv
+awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_kegg.tsv > slayer_kegg1.txt
+perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_kegg1.txt | sed 's/[^,]*/"&/2' | sed 's/$/"/' | sed '1i NCBI ID,KEGG' > slayer_kegg2.csv
 ```
 
-Obtain the taxonomic information for each nucleotide ID. This will generate a .csv file that contains taxonomic information from domain, phylum, class, order, family and genus. Note that this program will prompt the user for their email address that linked to NCBI, the input file name, and the output file name. Here I named the output as taxa.csv
+Obtain the taxonomic information for each nucleotide ID. This will generate a .csv file that contains taxonomic information from domain, phylum, class, order, family and genus. Note that this program will prompt the user for their email address that linked to NCBI, the input file name, and the output file name. The input file contains the list of nucleotide id. Here I named the output as taxa.csv
 
 ```
+# to get the list of nucleotide id of the protein homologs
+awk -F',' '{print $1}' slayer_annoview1.csv | sort -u > nucleotide.txt
+# get taxonomy information
 python gettaxa.py
 ```
 
-Merge pfam, kegg annotations and taxonomic information to csv   
+Merge pfam, kegg annotations and taxonomic information to output.csv file
 
 ```
-python merge.py
+python merge.py slayer_annoview2.csv slayer_pfam2.csv slayer_kegg2.csv taxa.csv output.csv
 ```
 
 Now, we have a new CSV file that contains not only a gene neighborhood dataset, but also its related taxonomic information and PFAM and KEGG annotations for the neighboring genes. We can now visualize the homology assignment by PFAM and KEGG in AnnoView.
