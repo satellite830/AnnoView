@@ -147,10 +147,16 @@ awk -F',' '{print $1}' slayer_annoview1.csv | sort -u > nucleotide.txt
 python gettaxa.py
 ```
 
-Merge pfam, kegg annotations and taxonomic information to output.csv file
+Merge pfam, kegg annotations and taxonomic information to output.csv file.
 
 ```
-python merge.py slayer_annoview2.csv slayer_pfam2.csv slayer_kegg2.csv taxa.csv output.csv
+python merge.py slayer_annoview2.csv taxa.csv slayer_pfam2.csv slayer_kegg2.csv output.csv
+```
+
+The annoview csv, taxonomy csv and output filenames are required, but protein annotation files (PFAM & KEGG) are not necessary. Users can also use this program to merge as many protein functional annotations as they would like to the annoview download csv. For instance,
+
+```
+python merge.py slayer_annoview2.csv taxa.csv annotation1.csv annotation2.csv ... output.csv
 ```
 
 Now, we have a new CSV file (output.csv) that contains not only a gene neighborhood dataset, but also its related taxonomy information, PFAM and KEGG annotations for the neighboring genes, and center gene information that can be used by AnnoView for gene neibhborhood sorting. We can now visualize the automatically sorted gene neighborhoods, and homology assignment by PFAM and KEGG in AnnoView.
