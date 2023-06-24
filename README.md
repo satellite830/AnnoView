@@ -1,72 +1,70 @@
 
-# AnnoView upload workflow
+# AnnoView Upload Workflow Tutorial
 
-This workflow is for users to download gene neighborhood dataset for proteins of interests in GBK format, and add customized annotations as well as taxonomy inforation to the download CSV.
+AnnoView is an online web server for gene neighborhood exploration in bacterial and archaeal genomes. This workflow provides a step-by-step guide to download gene neighborhood datasets for a list of proteins of interest from the National Center for Biotechnology Information (NCBI). Optionally, users can edit the .csv file downloaded from AnnoView, and add customized annotations in KEGG and Pfam, as well as taxonomy information of the associated genomes.
 
 ## Installation
 
 ### Entrez Direct (EDirect)
 
-Install Entrez Direct (EDirect) to retrieve gene neighborhood data from NCBI
+Install Entrez Direct (EDirect) for gene neighborhood data retrieval from NCBI:
 
 ```
 sh -c "$(wget -q ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh -O -)"
 ```
 
-Obtaining an API key from NCBI for fasta data retrieval 
-
-https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+Obtaining an API key from NCBI [here](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)
 
 ### PfamScan
 
-To install pfamscan, 
+#### Install PfamScan
 
-http://ftp.ebi.ac.uk/pub/databases/Pfam/Tools/
+Install PfamScan on your local machine from [here](http://ftp.ebi.ac.uk/pub/databases/Pfam/Tools/)
 
-Then, follow the steps in README to install all the dependencies and the most recent Pfam databases.
+Then, follow the steps in the README file to install all the dependencies and the most recent Pfam databases.
 
-Or conda install
+Or use Conda install (this requires Conda installation)
 
 ```
 conda install -c bioconda pfam_scan
 ```
 
-Accesss pfamscan online. This is least recommended as EMBL pfamscan service only allow up to 100 sequnces at a time.
+#### Or access PfamScan using EMBL service online
 
-https://www.ebi.ac.uk/Tools/pfa/pfamscan/
+Accesss pfamscan [online](https://www.ebi.ac.uk/Tools/pfa/pfamscan/). This is less recommended as EMBL PfamScan web service only allows up to 100 sequences at a time.
 
 ### KofamScan
 
-Install KofamScan
+#### Install KofamScan and HMM profiles for KEGG/KO
 
-https://www.genome.jp/ftp/tools/kofam_scan/
+Install KofamScan on your local machine from [here](https://www.genome.jp/ftp/tools/kofam_scan/)
 
-Or conda install
+Or use Conda install
 
 ```
 conda install -c bioconda kofamscan
 ```
 
-Donwload the HMM profiles for KEGG/KO with predefined score thresholds
+Download the HMM profiles for KEGG/KO with predefined score thresholds [here](https://www.genome.jp/ftp/db/kofam/)
 
-https://www.genome.jp/ftp/db/kofam/
+#### Or access KofamScan using the online service
 
-Access KofamScan online
+Access KOfamKoala (KofamScan service online) [here](https://www.genome.jp/tools/kofamkoala/)
 
-https://www.genome.jp/tools/kofamkoala/
+### Dependencies
 
 This workflow also requires python, perl installed in your machine. 
 
 #### To be added: orthofinder, eggnog  
 
-## Workflow for AnnoView upload
+## Workflow steps
 
 ### Generate a gene neighborhood dataset for proteins of your interest
 
-Suppose you have a list of protein sequences, and you are interested in visualizing their gene neighborhood. The next step allows users to download the gene neighborhood data in GBK format. Note that this program will retriece the 10kb upstream and downstream regions if the length is not defined by users.
+Suppose you have a list of protein sequences, and you are interested in visualizing their gene neighborhood. The next step allows users to download the gene neighborhood data in GBK format. Note that this program will retrieve the 10kb upstream and downstream regions if the length is not defined by users.
 
 ```
-bash getcsv.sh accessions.txt length
+bash getgbk.sh accessions.txt length
 ```
 You should have the gene neighborhood dataset in GBK format
 
