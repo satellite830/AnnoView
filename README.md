@@ -51,10 +51,6 @@ Download the HMM profiles for KEGG/KO with predefined score thresholds [here](ht
 
 Access KOfamKoala (KofamScan service online) [here](https://www.genome.jp/tools/kofamkoala/)
 
-### Dependencies
-
-This workflow also requires python, perl installed in your machine. 
-
 #### To be added: orthofinder, eggnog  
 
 ## Workflow steps
@@ -66,13 +62,11 @@ Suppose you have a list of protein sequences, and you are interested in visualiz
 ```
 bash getgbk.sh accessions.txt length
 ```
-You should have the gene neighborhood dataset in GBK format
+Now you have the gene neighborhood dataset in GBK format that can be uploaded to AnnoView
 
-Now, you can upload the dataset to AnnoView
+However, you may want more information to be displayed in AnnoView, e.g. taxonomic information, and functional annotations by PFAM and KEGG.
 
-However, you may want to more information to be displayed in AnnoView, e.g. taxonomic information, functional annotations by PFAM and KEGG.
-
-In the following example, I'll be using the protein accession numbers of Slr4 proteins and its homologs as the input file
+In the following example, I'll be using the protein accession numbers of Slr4 proteins and their homologs as the input file
 
 ### Edit CSV 
 This workflow is intended for editing the .csv files downloaded from AnnoView
@@ -140,8 +134,8 @@ Obtain the taxonomic information for each nucleotide ID. This will generate a .c
 
 ```
 # get the list of nucleotide id of the protein homologs that will be used for retrieving taxonomy information
-awk -F',' '{print $1}' slayer_annoview1.csv | sort -u > nucleotide.txt
-# get taxonomy information
+awk -F',' 'NR>1 {print $1}' slayer_annoview1.csv | sort -u > nucleotide.txt
+# get taxonomy information. The input file is nucleotide.txt, the output file is taxa.csv
 python gettaxa.py
 ```
 
