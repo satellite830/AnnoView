@@ -63,7 +63,7 @@ bash getgbk.sh accessions.txt [length] [api_key]
 
 `accessions.txt`: File containing protein accession numbers.
 
-`length` (optional): The gene neighborhood length (default: 10000 bases).
+`length` (optional): The gene neighborhood length (default: ±10000 kb).
 
 `api_key` (optional): Personal NCBI API key.
 
@@ -76,9 +76,9 @@ The following example shows how to retrieve those information and add them into 
 ### Edit CSV (for advanced users)
 This workflow is intended for editing the .csv files downloaded from AnnoView.
 
-Users can add annotation categories (kegg and pfam), define default center gene, taxonomic information by adding these information to the table.
-
 The slayer_annoview.csv file is downloaded from AnnoView visualization session. 
+
+Users can add annotation categories (kegg and pfam), define default center gene, taxonomic information by adding these information into the table.
 
 The updated center gene and annotation details can be viewed by uploading the updated table back to AnnoView. AnnoView will also automatically sort the gene neighborhoods when the default center gene is defined.
 
