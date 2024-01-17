@@ -71,7 +71,7 @@ This script generates GenBank files for each protein accession number. Now you h
 
 However, you may want more information displayed in AnnoView, e.g. taxonomic information, and functional annotations by Pfam and KEGG.
 
-The following example shows how to retrieve those information and add them into the AnnoView downloaded CSV file, I'll be using the protein accession numbers of Slr4 proteins and their homologs as the input file
+The example below demonstrates how to extract functional annotations and taxonomic information, and incorporating them into the CSV file downloaded from the AnnoView [Slr4](http://annoview.uwaterloo.ca/annoview/app/#/?id=example_5) example.
 
 ### Edit CSV (for advanced users)
 This workflow is intended for editing the .csv files downloaded from AnnoView.
