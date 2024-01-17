@@ -17,7 +17,7 @@ Obtaining an API key from NCBI [here](https://ncbiinsights.ncbi.nlm.nih.gov/2017
 
 ### PfamScan (for advanced users)
 
-#### Install PfamScan 
+#### Install Scan 
 
 Install PfamScan on your local machine from [here](http://ftp.ebi.ac.uk/pub/databases/Pfam/Tools/).
 
@@ -31,7 +31,7 @@ conda install -c bioconda pfam_scan
 
 #### Or access PfamScan using EMBL service online
 
-Accesss pfamscan [online](https://www.ebi.ac.uk/Tools/pfa/pfamscan/). This is less recommended as EMBL PfamScan web service only allows up to 100 sequences at a time.
+Accesss PfamScan [online](https://www.ebi.ac.uk/Tools/pfa/pfamscan/). This is less recommended as EMBL PfamScan web service only allows up to 100 sequences at a time.
 
 ### KofamScan (for advanced users)
 
@@ -69,7 +69,7 @@ bash getgbk.sh accessions.txt [length] [api_key]
 
 This script generates GenBank files for each protein accession number. Now you have a gene neighborhood dataset in GBK format that can be uploaded to AnnoView.
 
-However, you may want more information displayed in AnnoView, e.g. taxonomic information, and functional annotations by PFAM and KEGG.
+However, you may want more information displayed in AnnoView, e.g. taxonomic information, and functional annotations by Pfam and KEGG.
 
 The following example shows how to retrieve those information and add them into the AnnoView downloaded CSV file, I'll be using the protein accession numbers of Slr4 proteins and their homologs as the input file
 
@@ -78,7 +78,7 @@ This workflow is intended for editing the .csv files downloaded from AnnoView.
 
 The slayer_annoview.csv file is downloaded from AnnoView visualization session. 
 
-Users can add annotation categories (kegg and pfam), define default center gene, taxonomic information by adding these information into the table.
+Users can add annotation categories (KEGG and Pfam), define default center gene, taxonomic information by adding these information into the table.
 
 The updated center gene and annotation details can be viewed by uploading the updated table back to AnnoView. AnnoView will also automatically sort the gene neighborhoods when the default center gene is defined.
 
@@ -118,13 +118,13 @@ Annotate protein sequences with PfamScan.
 pfam_scan.pl -fasta slayer_unique.fasta -dir ~/pfam/Pfam35.0 -outfile slayer_pfam.txt
 ```
 
-Merge pfam annotations from the same protein sequence.
+Merge Pfam annotations from the same protein sequence.
 
 ```
 awk '/^[^#]/ {print $1,$6}' OFS="\t" slayer_pfam.txt | awk -F'\t' '{a[$1]=a[$1]?a[$1] OFS $2:$2} END{for (i in a) print i FS a[i]} ' OFS=" " > slayer_pfam1.txt
 ```
 
-For each protein sequence, sort its pfam annotations, edit the file into a csv table file, add column names.
+For each protein sequence, sort its Pfam annotations, edit the file into a csv table file, add column names.
 
 ```
 perl -lane 'print join ",", $F[0], sort @F[1..$#F]'  slayer_pfam1.txt | sed 's/[^,]*/"&/2' | sed 's/$/"/' | sed '1i NCBI ID,PFAM' > slayer_pfam2.csv
@@ -146,16 +146,16 @@ awk -F',' 'NR>1 {print $1}' slayer_annoview1.csv | sort -u > nucleotide.txt
 python gettaxa.py
 ```
 
-Merge pfam, kegg annotations and taxonomic information to output.csv file.
+Merge Pfam, KEGG annotations and taxonomic information to output.csv file.
 
 ```
 python merge.py slayer_annoview2.csv taxa.csv slayer_pfam2.csv slayer_kegg2.csv output.csv
 ```
 
-The annoview csv, taxonomy csv and output filenames are required, but protein annotation files (PFAM & KEGG) are not necessary. Users can also use this program to merge as many protein functional annotations as they would like to the annoview download csv. For instance,
+The annoview csv, taxonomy csv and output filenames are required, but protein annotation files (Pfam & KEGG) are not necessary. Users can also use this program to merge as many protein functional annotations as they would like to the annoview download csv. For instance,
 
 ```
 python merge.py slayer_annoview2.csv taxa.csv annotation1.csv annotation2.csv ... output.csv
 ```
 
-Now, we have a new CSV file (output.csv) that contains not only a gene neighborhood dataset, but also its related taxonomy information, PFAM and KEGG annotations for the neighboring genes, and center gene information that can be used by AnnoView for gene neibhborhood sorting. We can now visualize the automatically sorted gene neighborhoods, and homology assignment by PFAM and KEGG in AnnoView.
+Now, we have a new CSV file (output.csv) that contains not only a gene neighborhood dataset, but also its related taxonomy information, Pfam and KEGG annotations for the neighboring genes, and center gene information that can be used by AnnoView for gene neibhborhood sorting. We can now visualize the automatically sorted gene neighborhoods, and homology assignment by Pfam and KEGG in AnnoView.
