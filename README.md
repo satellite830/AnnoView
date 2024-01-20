@@ -71,7 +71,7 @@ This script generates GenBank files for each protein accession number. Now you h
 
 However, you may want more information displayed in AnnoView, e.g. taxonomic information, and functional annotations by Pfam and KEGG.
 
-The example below demonstrates how to extract functional annotations and taxonomic information, and incorporating them into the CSV file downloaded from the AnnoView [Slr4](http://annoview.uwaterloo.ca/annoview/app/#/?id=example_5) example.
+The example below demonstrates how to extract functional annotations and taxonomic information, and incorporating them into the CSV file downloaded from AnnoView.
 
 ### Edit CSV (for advanced users)
 This workflow is intended for editing the .csv files downloaded from AnnoView.
@@ -158,4 +158,4 @@ The annoview csv, taxonomy csv and output filenames are required, but protein an
 python merge.py slayer_annoview2.csv taxa.csv annotation1.csv annotation2.csv ... output.csv
 ```
 
-Now, we have a new CSV file (output.csv) that contains not only a gene neighborhood dataset, but also its related taxonomy information, Pfam and KEGG annotations for the neighboring genes, and center gene information that can be used by AnnoView for gene neibhborhood sorting. We can now visualize the automatically sorted gene neighborhoods, and homology assignment by Pfam and KEGG in AnnoView.
+Now, we have a new CSV file (output.csv) that contains not only a gene neighborhood dataset, but also its related taxonomy information, Pfam and KEGG annotations for the neighboring genes, and center gene information that can be used by AnnoView for gene neibhborhood sorting. This example can be found on the AnnoView [Slr4](http://annoview.uwaterloo.ca/annoview/app/#/?id=example_5) example page. We can now visualize the automatically sorted gene neighborhoods, and homology assignment by Pfam and KEGG in AnnoView.
